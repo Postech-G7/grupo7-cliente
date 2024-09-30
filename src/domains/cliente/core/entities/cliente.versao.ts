@@ -1,17 +1,21 @@
 export class ClienteVersao {
+  issuedAt: Date;
+  expiresAt: Date;
 
-    constructor (versao: string, dataCadastro: Date) {
-        this.actual_version = versao
-        this._dateInput = dataCadastro
+  constructor(issuedAt: Date, expiresAt: Date) {
+    this.issuedAt = issuedAt;
+    this.expiresAt = expiresAt;
+  }
+
+    public getVersao(): string {
+        return '1.0.0'
     }
 
-    private actual_version: string
-    private _dateInput!: Date
-
-    public get versao(): string {
-        return this.actual_version
+    public getDataCriacao(): Date {
+        return this.issuedAt
     }
-    public get dataCadastro(): Date {
-        return this._dateInput
+
+    public getDataExpiracao(): Date {
+        return this.expiresAt
     }
 }
