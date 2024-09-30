@@ -7,6 +7,7 @@
     "dev": "tsx watch src/application",
     "start": "tsx src/swagger.ts & tsx src/configuration/server.config.ts",
     "swagger": "tsx watch src/swagger.ts",
+    "start:offline": "tsc && serverless offline",
     "build": "tsc ",
     "lint": "eslint --ext .ts src",
     "lint:fix": "eslint --ext .ts src --fix",
