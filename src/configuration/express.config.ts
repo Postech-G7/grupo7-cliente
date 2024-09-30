@@ -7,7 +7,7 @@ import routes from "./routes.config";
 import { errorHandler } from "../domains/suporte/infra/error.handler";
 
 import swaggerUi from "swagger-ui-express";
-import swaggerDocument from "../swagger/swagger";
+import { swaggerDocument } from "../swagger/swagger";
 
 const ExpressConfig = (): Application => {
   const app = express();

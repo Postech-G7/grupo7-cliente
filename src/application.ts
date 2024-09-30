@@ -1,11 +1,11 @@
 import swaggerAutogen from 'swagger-autogen'
-import { swagger } from 'swagger/swagger.js'
+import { swaggerDocument } from 'swagger/swagger';
 
 const outputFile = './swagger/swagger.json'
 const routes = ['./configuration/routes.config.ts']
 
 swaggerAutogen({
   language: 'pt-BR'
-})(outputFile, routes, swagger).then(async () => {
+})(outputFile, routes, swaggerDocument).then(async () => {
   await import('./configuration/server.config.js')
 })
