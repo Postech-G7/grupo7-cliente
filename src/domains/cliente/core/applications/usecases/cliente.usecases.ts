@@ -22,7 +22,7 @@ export class ClienteUseCases {
       throw new CustomError("Já existe cliente para esse CPF", 400, false, []);
     }
 
-    const user = await this.identity.createUser(cliente); // cria o usuário no firebase
+    const user = await this.identity.createUser(cliente) as { uid: string }; // cria o usuário no firebase
 
     cliente.setIdentity(user.uid); // seta o uid do firebase no cliente
 
@@ -78,8 +78,8 @@ export class ClienteUseCases {
       cpf,
       nome: ultimaVersao.getNome(),
       email,
-      versao: ultimaVersao.getVersao()?.versao,
-      dataCadastro: ultimaVersao.getVersao()?.dataCadastro,
+      versao: ultimaVersao.getVersao()?.getVersao(),
+      dataCadastro: ultimaVersao.getVersao()?.getDataCriacao(),
     })
   }
 
