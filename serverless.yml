@@ -11,7 +11,6 @@ provider:
   timeout: 30
   environment:
     DATABASE_URL: ${env:DATABASE_URL}
-    SERVICE_ACCOUNT: ${env:SERVICE_ACCOUNT}
     COGNITO_USER_POOL_ID: ${env:COGNITO_USER_POOL_ID}
     COGNITO_CLIENT_ID: ${env:COGNITO_CLIENT_ID}
 
