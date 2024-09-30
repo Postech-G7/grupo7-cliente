@@ -18,10 +18,12 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-    - name: npm install
+    - name: install
       run: npm install
-    - name: npm run build
+    - name: ci
       run: npm ci
+    - name: build
+      run: npm run build
     - name: Create .env file
       run: |
         echo "DATABASE_URL=${{ secrets.MONGO_ATLAS_URI }}" >> .env
