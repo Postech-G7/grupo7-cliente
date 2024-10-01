@@ -1,3 +1,6 @@
-node_modules
-.serverless
+backend/node_modules
+backend/src/swagger/swagger.json
+data
 dist
+.serverless
+.env
