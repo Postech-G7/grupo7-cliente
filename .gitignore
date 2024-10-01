@@ -1,5 +1,5 @@
-backend/node_modules
-backend/src/swagger/swagger.json
+node_modules
+src/swagger/swagger.json
 data
 dist
 .serverless
