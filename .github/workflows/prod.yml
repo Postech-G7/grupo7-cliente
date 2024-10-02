@@ -34,7 +34,7 @@ jobs:
         run: npm run build
 
       - name: Serverless deploy
-        run:  npm install -g serverless
+        run:  npm install -g serverless@3
 
       - name: Serverless deploy
         run: serverless deploy --stage prod
