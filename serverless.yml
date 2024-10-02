@@ -6,16 +6,21 @@ variablesResolutionMode: 20210326
 provider:
   name: aws
   runtime: nodejs20.x
-  region: sa-east-1
+  region: us-east-1
   memorySize: 512
   timeout: 30
   environment:
     DATABASE_URL: ${env:DATABASE_URL}
-    SERVICE_ACCOUNT: ${env:SERVICE_ACCOUNT}
+    SERVICE_ACCOUNT: ${self:custom.secrets.service_account.SERVICE_ACCOUNT}
 
 custom:
   bundle:
     tsConfig: "./tsconfig.json"
+  serverless-offline-ssm:
+    stages:
+      - offline
+  secrets:
+    service_account: ${ssm:/aws/reference/secretsmanager/fiap}
 
 functions:
   adiciona-cliente:
@@ -62,4 +67,5 @@ functions:
           cors: true
 
 plugins:
+  - serverless-offline-ssm
   - serverless-offline
