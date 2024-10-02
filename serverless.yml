@@ -10,7 +10,7 @@ provider:
   memorySize: 512
   timeout: 30
   environment:
-    DATABASE_URL: ${env:DATABASE_URL}
+    DATABASE_URL: ${self:custom.secrets.database_url.DATABASE_URL}
     SERVICE_ACCOUNT: ${self:custom.secrets.service_account.SERVICE_ACCOUNT}
 
 custom:
@@ -21,6 +21,7 @@ custom:
       - offline
   secrets:
     service_account: ${ssm:/aws/reference/secretsmanager/fiap}
+    database_url: ${ssm:/aws/reference/secretsmanager/fiap}
 
 functions:
   adiciona-cliente:
