@@ -11,7 +11,8 @@
     "lint": "eslint --ext .ts src",
     "lint:fix": "eslint --ext .ts src --fix",
     "start:cliente:prod": "tsc && serverless offline -s prod",
-    "deploy:cliente:prod": "tsc && serverless deploy -s prod"
+    "build:image": "gcloud builds submit --tag gcr.io/storied-imprint-441522-s7/cliente --project storied-imprint-441522-s7",
+    "deploy": "npm run build:image && gcloud run deploy cliente --image gcr.io/storied-imprint-441522-s7/cliente --region us-central-1 --project storied-imprint-441522-s7"
   },
   "keywords": [],
   "author": "Charlis Monhol, Luan Reis, Marina Lucas, Roberto Furlan",
@@ -19,6 +20,7 @@
   "dependencies": {
     "@types/jsonwebtoken": "^9.0.6",
     "@types/qrcode": "^1.5.5",
+    "api": "file:",
     "axios": "^1.6.7",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
