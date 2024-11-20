@@ -10,7 +10,7 @@ export const swagger = {
     title: "Tech Challenge Fiap",
     description: "Conjuntos dde recursos e operações do Tech Challenge da FIAP",
   },
-  host: `localhost:3000`,
+  host: `localhost:31300`,
   tags: [
     {
       name: "Cliente",
