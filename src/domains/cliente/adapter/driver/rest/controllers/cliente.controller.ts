@@ -37,6 +37,7 @@ export class ClienteController {
   }
   async atualiza(request: Request): Promise<CustomResponse | CustomError> {
     try {
+      console.log("entrou no atualiza", request.body);
       const result = validationResult(request);
 
       if (!result.isEmpty()) {

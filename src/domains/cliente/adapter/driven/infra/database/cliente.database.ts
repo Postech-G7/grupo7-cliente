@@ -27,6 +27,7 @@ export class ClienteDatabase extends Repository implements ICliente {
   }
 
   async atualiza(cliente: Cliente): Promise<ClienteVersao | null> {
+    console.log("entrou no atualiza", cliente);
     return this.adiciona(cliente);
   }
 

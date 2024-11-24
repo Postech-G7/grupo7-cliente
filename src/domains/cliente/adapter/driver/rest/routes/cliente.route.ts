@@ -119,9 +119,10 @@ router.post(
               'schema': { $ref: '#/definitions/post_cliente_autenticacao' }
       }      
   */
-
+    console.log("Entrou no post autenticacao, ", request.body);
     const database = new ClienteDatabase();
     const identity = new Identity();
+    console.log("aqui1");
     const service = new ClienteUseCases(database, identity);
     const controller = new ClienteController(service);
 
