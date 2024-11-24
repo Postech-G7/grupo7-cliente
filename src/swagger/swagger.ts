@@ -37,7 +37,7 @@ export const swagger = {
         operationId: "getclienteautenticado",
         security: [
           {
-            JWT: [], // Apenas esta rota requer o token JWT
+            JWT: [],
           },
         ],
         responses: {
