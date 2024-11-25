@@ -1,13 +1,13 @@
-import { ClienteUseCases } from "../domains/cliente/core/applications/usecases/cliente.usecases";
-import { ClienteDatabase } from "../domains/cliente/adapter/driven/infra/database/cliente.database";
-import { Identity } from "../domains/cliente/adapter/driven/infra/identity/identity";
-import { Cliente } from "../domains/cliente/core/entities/cliente";
-import { ClienteVersao } from "../domains/cliente/core/entities/cliente.versao";
-import { CustomError } from "../domains/suporte/entities/custom.error";
+import { ClienteDatabase } from "../../../adapter/driven/infra/database/cliente.database";
+import { Identity } from "../../../adapter/driven/infra/identity/identity";
+import { CustomError } from "../../../../suporte/entities/custom.error";
+import { Cliente } from "../../entities/cliente";
+import { ClienteVersao } from "../../entities/cliente.versao";
+import { ClienteUseCases } from "./cliente.usecases";
 import { UserRecord } from "firebase-admin/auth";
 
-jest.mock("../domains/cliente/adapter/driven/infra/database/cliente.database");
-jest.mock("../domains/cliente/adapter/driven/infra/identity/identity");
+jest.mock("../../../adapter/driven/infra/database/cliente.database");
+jest.mock("../../../adapter/driven/infra/identity/identity");
 
 describe("ClienteUseCases", () => {
   let clienteUseCases: ClienteUseCases;
