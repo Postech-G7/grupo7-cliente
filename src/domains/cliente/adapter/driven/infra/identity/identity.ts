@@ -33,7 +33,7 @@ export class Identity {
     return this.app?.auth();
   }
 
-  createUser(cliente: Cliente): Promise<UserRecord> {
+  async createUser(cliente: Cliente): Promise<UserRecord> {
     const payload: CreateRequest = {
       email: cliente.getEmail(),
       emailVerified: false,
@@ -41,8 +41,9 @@ export class Identity {
       displayName: cliente.getNome(),
       disabled: false,
     };
-
-    return this.getIdentity().createUser(payload);
+    const newUser = await this.getIdentity().createUser(payload);
+    console.log("newUser", newUser);
+    return newUser;
   }
 
   createCustomToken(cliente: Cliente, claims: any): Promise<string> {
