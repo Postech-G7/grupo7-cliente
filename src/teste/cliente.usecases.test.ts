@@ -93,4 +93,176 @@ describe("ClienteUseCases", () => {
       expect(cliente.getIdentity()).toBe(user.uid);
     });
   });
+
+  describe("atualiza", () => {
+    it("should throw an error if no client with the given CPF exists", async () => {
+      const cliente = new Cliente(
+        "12345678900",
+        "Marina Altoé",
+        "marina@gmail.com"
+      );
+      mockDatabase.buscaUltimaVersao.mockResolvedValue(null);
+
+      await expect(clienteUseCases.atualiza(cliente)).rejects.toThrow(
+        CustomError
+      );
+      await expect(clienteUseCases.atualiza(cliente)).rejects.toThrow(
+        "Cliente não encontrado"
+      );
+    });
+
+    it("should throw an error if no information is updated", async () => {
+      const cliente = new Cliente(
+        "12345678900",
+        "Marina Altoé",
+        "marina@gmail.com"
+      );
+      mockDatabase.buscaUltimaVersao.mockResolvedValue(cliente);
+
+      await expect(clienteUseCases.atualiza(cliente)).rejects.toThrow(
+        CustomError
+      );
+      await expect(clienteUseCases.atualiza(cliente)).rejects.toThrow(
+        "Nenhuma informação para atualizar"
+      );
+    });
+
+    it("should update the client if information is different", async () => {
+      const cliente = new Cliente(
+        "12345678900",
+        "Marina Altoé",
+        "marina@gmail.com"
+      );
+      const updatedCliente = new Cliente(
+        "12345678900",
+        "Marina Altoé",
+        "marina_updated@gmail.com"
+      );
+      const clienteVersao = new ClienteVersao(
+        "6743ba1bb8b15c02a34b0341",
+        new Date()
+      );
+
+      mockDatabase.buscaUltimaVersao.mockResolvedValue(cliente);
+      mockDatabase.atualiza.mockResolvedValue(clienteVersao);
+
+      const result = await clienteUseCases.atualiza(updatedCliente);
+
+      expect(result).toBe(clienteVersao);
+      expect(mockDatabase.buscaUltimaVersao).toHaveBeenCalledWith(
+        updatedCliente.getCpf()
+      );
+      expect(mockDatabase.atualiza).toHaveBeenCalledWith(updatedCliente);
+    });
+  });
+
+  describe("buscaUltimaVersao", () => {
+    it("should return the latest version of the client if it exists", async () => {
+      const cliente = new Cliente(
+        "12345678900",
+        "Marina Altoé",
+        "marina@gmail.com"
+      );
+      mockDatabase.buscaUltimaVersao.mockResolvedValue(cliente);
+
+      const result = await clienteUseCases.buscaUltimaVersao(cliente.getCpf());
+
+      expect(result).toBe(cliente);
+      expect(mockDatabase.buscaUltimaVersao).toHaveBeenCalledWith(
+        cliente.getCpf()
+      );
+    });
+
+    it("should throw an error if the client does not exist", async () => {
+      mockDatabase.buscaUltimaVersao.mockResolvedValue(null);
+
+      await expect(
+        clienteUseCases.buscaUltimaVersao("12345678900")
+      ).rejects.toThrow(CustomError);
+      await expect(
+        clienteUseCases.buscaUltimaVersao("12345678900")
+      ).rejects.toThrow("Cliente não encontrado com o CPF informado");
+    });
+  });
+
+  describe("autenticacao", () => {
+    it("should throw an error if the client does not exist", async () => {
+      mockDatabase.buscaUltimaVersao.mockResolvedValue(null);
+
+      await expect(
+        clienteUseCases.autenticacao("marina@gmail.com", "12345678900")
+      ).rejects.toThrow(CustomError);
+      await expect(
+        clienteUseCases.autenticacao("marina@gmail.com", "12345678900")
+      ).rejects.toThrow("Cliente não encontrado com o CPF informado");
+    });
+
+    it("should throw an error if the email does not match", async () => {
+      const cliente = new Cliente(
+        "12345678900",
+        "Marina Altoé",
+        "marina@gmail.com"
+      );
+      mockDatabase.buscaUltimaVersao.mockResolvedValue(cliente);
+
+      await expect(
+        clienteUseCases.autenticacao("wrongemail@gmail.com", "12345678900")
+      ).rejects.toThrow(CustomError);
+      await expect(
+        clienteUseCases.autenticacao("wrongemail@gmail.com", "12345678900")
+      ).rejects.toThrow("Cliente não encontrado com o CPF informado");
+    });
+
+    it("should return a token if the client exists and email matches", async () => {
+      const cliente = new Cliente(
+        "12345678900",
+        "Marina Altoé",
+        "marina@gmail.com"
+      );
+      const token = "mockToken";
+      mockDatabase.buscaUltimaVersao.mockResolvedValue(cliente);
+      mockIdentity.createCustomToken.mockResolvedValue(token);
+
+      const result = await clienteUseCases.autenticacao(
+        "marina@gmail.com",
+        "12345678900"
+      );
+
+      expect(result).toBe(token);
+      expect(mockDatabase.buscaUltimaVersao).toHaveBeenCalledWith(
+        "12345678900"
+      );
+      expect(mockIdentity.createCustomToken).toHaveBeenCalledWith(
+        cliente,
+        expect.any(Object)
+      );
+    });
+  });
+
+  describe("buscaAutenticado", () => {
+    it("should return the client if the token is valid", async () => {
+      const cliente = new Cliente(
+        "12345678900",
+        "Marina Altoé",
+        "marina@gmail.com"
+      );
+      mockIdentity.verifyIdToken.mockResolvedValue(cliente);
+
+      const result = await clienteUseCases.buscaAutenticado("Bearer mockToken");
+
+      expect(result).toBe(cliente);
+      expect(mockIdentity.verifyIdToken).toHaveBeenCalledWith("mockToken");
+    });
+
+    it("should throw an error if the token is invalid", async () => {
+      mockIdentity.verifyIdToken.mockRejectedValue(new Error());
+
+      await expect(
+        clienteUseCases.buscaAutenticado("Bearer mockToken")
+      ).rejects.toThrow(CustomError);
+      await expect(
+        clienteUseCases.buscaAutenticado("Bearer mockToken")
+      ).rejects.toThrow("Cliente não está autenticado");
+    });
+  });
 });

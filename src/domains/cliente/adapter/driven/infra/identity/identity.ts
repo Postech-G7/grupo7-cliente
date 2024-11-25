@@ -55,7 +55,7 @@ export class Identity {
       token,
       this.serviceAccount.private_key
     ) as jwt.JwtPayload;
-
+    
     return new Cliente(
       verified?.claims.cpf,
       verified?.claims.nome,

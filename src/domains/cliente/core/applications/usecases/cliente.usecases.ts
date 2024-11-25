@@ -65,7 +65,6 @@ export class ClienteUseCases {
   }
 
   async autenticacao(email: string, cpf: string): Promise<string> {
-    console.info("autenticacao");
     const ultimaVersao: Cliente | null = await this.database.buscaUltimaVersao(
       cpf
     ); //verifica se o cliente existe no banco e retorna a ultima versao
@@ -82,7 +81,6 @@ export class ClienteUseCases {
       );
     }
 
-    console.info("vai criar o token");
     return this.identity.createCustomToken(ultimaVersao, {
       //cria o token de autenticação
       cpf,
