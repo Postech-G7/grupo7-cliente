@@ -255,7 +255,7 @@ describe("ClienteUseCases", () => {
     });
 
     it("should throw an error if the token is invalid", async () => {
-      mockIdentity.verifyIdToken.mockRejectedValue(new Error());
+      mockIdentity.verifyIdToken.mockRejectedValue(new Error("Invalid token"));
 
       await expect(
         clienteUseCases.buscaAutenticado("Bearer mockToken")
