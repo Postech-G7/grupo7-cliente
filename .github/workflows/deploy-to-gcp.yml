@@ -1,14 +1,13 @@
-name: "Deploy GCP"
+name: 'Deploy GCP'
 
 on:
   push:
-    branches: [main]
-  pull_request:
-    branches: "**"
+    branches:
+      - 'main'
   workflow_dispatch:
 
 concurrency:
-  group: "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+  group: '${{ github.workflow }}-${{ github.head_ref || github.ref }}'
   cancel-in-progress: true
 
 jobs:
@@ -16,39 +15,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: "Check out repository"
-        uses: "actions/checkout@v4"
+      - name: 'Check out repository'
+        uses: 'actions/checkout@v4'
 
-      - name: "Set up Node.js"
-        uses: "actions/setup-node@v4"
+      - name: 'Set up Node.js'
+        uses: 'actions/setup-node@v4'
         with:
-          node-version: "20.x"
+          node-version: '20.x'
 
-      - name: "Install dependencies"
-        run: "npm install"
+      - name: 'Install dependencies'
+        run: 'npm install'
 
-      - name: "Authenticate to GCP"
-        uses: "google-github-actions/auth@v1"
+      - name: 'Authenticate to GCP'
+        uses: 'google-github-actions/auth@v1'
         with:
-          credentials_json: "${{ secrets.CI_CD_GCP_POSTECH_GRUPO7 }}"
+          credentials_json: '${{ secrets.CI_CD_GCP_POSTECH_GRUPO7 }}'
 
-      - name: "Set up Cloud SDK"
-        uses: "google-github-actions/setup-gcloud@v1"
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v1'
         with:
-          project_id: "storied-imprint-441522-s7"
+          project_id: 'storied-imprint-441522-s7'
 
-      - name: "Configure Docker"
-        run: gcloud auth configure-docker --quiet
-
-      - name: "Build Docker image"
-        run: docker build -t gcr.io/storied-imprint-441522-s7/cliente:latest .
-
-      - name: "Push Docker image"
-        run: docker push gcr.io/storied-imprint-441522-s7/cliente:latest
-
-      - name: "Deploy to Cloud Run"
-        run: gcloud run deploy cliente-backend --image gcr.io/storied-imprint-441522-s7/cliente:latest --region us-central1 --platform managed --allow-unauthenticated
-        env:
-          NODE_ENV: "production"
-          DATABASE_URL: "${{ secrets.DATABASE_URL }}"
-          API_KEY: "${{ secrets.API_KEY }}"
+      - name: 'Deploy to Cloud Run'
+        run: 'npm run deploy'
