@@ -120,6 +120,14 @@ router.post(
       }      
   */
     console.log("Entrou no post autenticacao, ", request.body);
+    console.log(process.env.DATABASE_URL);
+    console.log(process.env.MERCADO_PAGO_URL);
+    console.log(process.env.MERCADO_PAGO_USERID);
+    console.log(process.env.MERCADO_PAGO_TOKEN);
+    console.log(process.env.MERCADO_PAGO_POS);
+    console.log(process.env.MERCADO_PAGO_WEBHOOK_URL);
+    console.log(process.env.SERVICE_ACCOUNT);
+
     const database = new ClienteDatabase();
     const identity = new Identity();
     console.log("aqui1");
