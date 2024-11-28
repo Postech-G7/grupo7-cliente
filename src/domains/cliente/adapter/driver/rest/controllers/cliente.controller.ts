@@ -48,7 +48,7 @@ export class ClienteController {
           result.array()
         );
       }
-
+      console.log("entrou no atualiza", request.body );
       const { nome, email } = request.body;
       return new CustomResponse(
         200,
