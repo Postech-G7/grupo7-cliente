@@ -2,7 +2,7 @@ name: "Deploy GCP"
 
 on:
   pull_request:
-    branches: "**"
+    branches: "prod"
   push:
     branches:
       - "main"
