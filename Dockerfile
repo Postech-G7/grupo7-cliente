@@ -14,7 +14,6 @@ RUN npx tsx ./src/swagger.ts
 
 ENV PORT=3000
 ENV GCP_PROJECT_ID=storied-imprint-441522-s7
-ENV GC0P_ENV=production
 
 EXPOSE 3000
 
