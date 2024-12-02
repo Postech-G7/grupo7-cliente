@@ -12,15 +12,6 @@ export class Identity {
     try {
       this.serviceAccount = JSON.parse(process.env.SERVICE_ACCOUNT!);
 
-      const firebaseConfig = {
-        apiKey: "AIzaSyAAQ1eNMCemVmi0cQOc7XStpMx0r5EgRlM",
-        authDomain: "grupo7-cliente.firebaseapp.com",
-        projectId: "grupo7-cliente",
-        storageBucket: "grupo7-cliente.firebasestorage.app",
-        messagingSenderId: "1041965577757",
-        appId: "1:1041965577757:web:2fc5714a6b782359ca38f4"
-      };
-
       const cert = {
         projectId: this.serviceAccount.project_id,
         clientEmail: this.serviceAccount.client_email,
