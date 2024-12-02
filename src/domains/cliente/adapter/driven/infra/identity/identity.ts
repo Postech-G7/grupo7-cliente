@@ -10,7 +10,7 @@ export class Identity {
 
   constructor() {
     try {
-      this.serviceAccount = process.env.SERVICE_ACCOUNT;
+      this.serviceAccount = JSON.parse(process.env.SERVICE_ACCOUNT);
 
       const cert = {
         projectId: this.serviceAccount.project_id,
