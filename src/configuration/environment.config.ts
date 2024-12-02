@@ -4,15 +4,13 @@ const NODE_ENV = process.env?.NODE_ENV;
 const ENVS = ["DATABASE_HOST", "DATABASE_PORT", "DATABASE_USER", "DATABASE_PASSWORD", "DATABASE_NAME", "SERVICE_ACCOUNT"]
 
 if (!process.env.NODE_ENV) {
-    // Carregar segredos se NODE_ENV não estiver definido
     (async () => {
       try {
         console.log('Iniciando o carregamento de segredos...');
         const secretPromises = ENVS.map(async (env) => {
           try {
             const secret = await accessSecretVersion(env);
-            console.log(`Segredo ${env} carregado: ${secret}`);
-            process.env[env] = secret; // Adicionar ao process.env
+            process.env[env] = secret; 
           } catch (error) {
             console.error(`Erro ao acessar segredo ${env}:`, error);
           }
