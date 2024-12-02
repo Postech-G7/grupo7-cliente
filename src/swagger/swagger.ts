@@ -1,6 +1,7 @@
 import {
   post_cliente,
   put_cliente,
+  post_cliente_autenticacao,
 } from "../domains/cliente/adapter/driver/rest/swagger/acesso.swagger";
 
 export const swagger = {
@@ -20,6 +21,7 @@ export const swagger = {
   definitions: {
     post_cliente,
     put_cliente,
+    post_cliente_autenticacao
   },
 };
 
