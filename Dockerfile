@@ -13,6 +13,7 @@ COPY src ./src
 RUN npx tsx ./src/swagger.ts
 
 ENV PORT=3000
+ENV NODE_ENV=production
 ENV DATABASE_HOST=localhost
 ENV DATABASE_NAME=u730606768_clientes
 ENV DATABASE_PASSWORD=mongo
