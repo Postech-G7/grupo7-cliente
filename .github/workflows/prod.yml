@@ -1,46 +1,41 @@
-name: CI
+name: 'Deploy GCP'
 
-# Controls when the action will run. Triggers the workflow on push or pull request events
 on:
   push:
-    branches: [main]
-  pull_request:
-    branches: "**"
+    branches:
+      - 'main'
+  workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+concurrency:
+  group: '${{ github.workflow }}-${{ github.head_ref || github.ref }}'
+  cancel-in-progress: true
+
 jobs:
   deploy:
-    name: Deploy
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20.x]
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+      - name: 'Check out repository'
+        uses: 'actions/checkout@v4'
+
+      - name: 'Set up Node.js'
+        uses: 'actions/setup-node@v4'
         with:
-          persist-credentials: false
+          node-version: '20.x'
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - name: 'Install dependencies'
+        run: 'npm install'
+
+      - name: 'Authenticate to GCP'
+        uses: 'google-github-actions/auth@v1'
         with:
-          node-version: ${{ matrix.node-version }}
+          credentials_json: '${{ secrets.CI_CD_GCP_POSTECH_GRUPO7 }}'
 
-      - name: Npm install
-        run: npm install
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v1'
+        with:
+          project_id: 'storied-imprint-441522-s7'
 
-      - name: Npm tsc
-        run: npm run build
+      - name: 'Deploy to Cloud Run'
+        run: 'npm run deploy'
 
-      - name: Serverless deploy
-        run:  npm install -g serverless@3
-
-      - name: Serverless deploy
-        run: serverless deploy --stage prod
-
-        env:
-          LOG_LEVEL: debug
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}

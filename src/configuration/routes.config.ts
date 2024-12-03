@@ -4,6 +4,10 @@ import clienteRoutes from "../domains/cliente/adapter/driver/rest/routes/cliente
 
 const routes = Router();
 
+routes.get("/ping", (_, res) => {
+  res.status(200).send("It's working");
+});
+
 routes.use("/api/clientes", clienteRoutes);
 routes.use("/api/health-check", helthCheckRoutes);
 

@@ -37,6 +37,7 @@ export class ClienteController {
   }
   async atualiza(request: Request): Promise<CustomResponse | CustomError> {
     try {
+      console.log("entrou no atualiza", request.body);
       const result = validationResult(request);
 
       if (!result.isEmpty()) {
@@ -47,7 +48,7 @@ export class ClienteController {
           result.array()
         );
       }
-
+      console.log("entrou no atualiza", request.body );
       const { nome, email } = request.body;
       return new CustomResponse(
         200,

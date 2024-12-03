@@ -5,61 +5,63 @@ import { ClienteVersao } from "../../../../core/entities/cliente.versao";
 
 export class ClienteDatabase extends Repository implements ICliente {
   constructor() {
-    super(process.env.DATABASE_URL!);
+    const config = {
+      host: process.env.DATABASE_HOST,
+      port: Number(process.env.DATABASE_PORT),
+      user: process.env.DATABASE_USER,
+      password: process.env.DATABASE_PASSWORD,
+      database: process.env.DATABASE_NAME,
+    };
+    super(config);
   }
 
   async adiciona(cliente: Cliente): Promise<ClienteVersao | null> {
-    const clienteRef = await this.getCollection(
-      "lanchonete",
-      "clientes"
-    ).then();
-    const result = await clienteRef.insertOne({
-      cpf: cliente.getCpf(),
-      nome: cliente.getNome(),
-      email: cliente.getEmail(),
-      identity: cliente.getIdentity(),
-    });
+    const sql = `INSERT INTO clientes (cpf, nome, email, identity) VALUES (?, ?, ?, ?)`;
+    const result: any = await this.query(sql, [
+      cliente.getCpf(),
+      cliente.getNome(),
+      cliente.getEmail(),
+      cliente.getIdentity(),
+    ]);
 
-    return new ClienteVersao(
-      result.insertedId.toString(),
-      result.insertedId.getTimestamp()
-    );
+    if (!result || !result.insertId) {
+      throw new Error('Failed to insert cliente');
+    }
+
+    return new ClienteVersao(result.insertId.toString(), new Date());
   }
 
   async atualiza(cliente: Cliente): Promise<ClienteVersao | null> {
-    return this.adiciona(cliente);
+    const sql = `UPDATE clientes SET nome = ?, email = ?, identity = ? WHERE cpf = ?`;
+    const result: any = await this.query(sql, [
+      cliente.getNome(),
+      cliente.getEmail(),
+      cliente.getIdentity(),
+      cliente.getCpf(),
+    ]);
+
+    if (!result || result.affectedRows === 0) {
+      throw new Error('Failed to update cliente');
+    }
+
+    return new ClienteVersao(cliente.getCpf(), new Date());
   }
 
   async buscaUltimaVersao(cpf: string): Promise<Cliente | null> {
-    const clienteRef = await this.getCollection(
-      "lanchonete",
-      "clientes"
-    ).then();
-    const cursor = clienteRef
-      .find(
-        { $and: [{ cpf }] },
-        {
-          sort: { _id: "desc" },
-        }
-      )
-      .limit(1);
+    const sql = `SELECT * FROM clientes WHERE cpf = ? ORDER BY id DESC LIMIT 1`;
+    const results: any = await this.query(sql, [cpf]);
 
-    let data;
-
-    for await (const doc of cursor) {
-      data = doc;
-    }
-
-    if (!data) {
+    if (results.length === 0) {
       return null;
     }
 
+    const data = results[0];
     return new Cliente(
-      data?.cpf,
-      data?.nome,
-      data?.email,
-      data?.identity,
-      new ClienteVersao(data?._id.toString(), data?._id.getTimestamp())
+      data.cpf,
+      data.nome,
+      data.email,
+      data.identity,
+      new ClienteVersao(data.id.toString(), data.created_at)
     );
   }
 }
