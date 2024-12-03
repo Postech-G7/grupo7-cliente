@@ -1,29 +1,34 @@
-import * as mongoDB from "mongodb";
+import mysql from 'mysql2/promise';
 
 export class Repository {
-  url: string;
-  database!: string;
-  collection!: string;
+  private connection!: mysql.Connection;
+  private connectionPromise: Promise<void> | null = null;
 
-  constructor(url: string) {
-    this.url = url;
+  constructor(config: mysql.ConnectionOptions) {
+    this.connectionPromise = this.initConnection(config);
   }
 
-  protected async getCollection(
-    database: string,
-    collection: string
-  ): Promise<mongoDB.Collection> {
+  private async initConnection(config: mysql.ConnectionOptions) {
     try {
-      const client: mongoDB.MongoClient = new mongoDB.MongoClient(this.url);
-      await client.connect();
-      const db: mongoDB.Db = client.db(database);
-      return db.collection(collection);
+      this.connection = await mysql.createConnection(config);
+      console.log('Database connection established');
     } catch (error) {
-      throw error;
+      console.error('Error initializing database connection:', error);
+      throw new Error('Database connection initialization failed');
     }
   }
 
-  protected toObjectId(id: string): mongoDB.ObjectId {
-    return new mongoDB.ObjectId(id);
+  protected async query(sql: string, params: any[] = []) {
+    if (this.connectionPromise) {
+      await this.connectionPromise;
+      this.connectionPromise = null; // Clear the promise after the connection is established
+    }
+
+    if (!this.connection) {
+      throw new Error('Database connection is not initialized');
+    }
+
+    const [results] = await this.connection.execute(sql, params);
+    return results;
   }
 }

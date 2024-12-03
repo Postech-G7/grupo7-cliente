@@ -65,7 +65,7 @@ export const swagger = {
   definitions: {
     post_cliente,
     put_cliente,
-    post_cliente_autenticacao,
+    post_cliente_autenticacao
   },
 };
 

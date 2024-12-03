@@ -10,8 +10,7 @@ export class Identity {
 
   constructor() {
     try {
-      console.log("service account", process.env.SERVICE_ACCOUNT);
-      this.serviceAccount = JSON.parse(process.env.SERVICE_ACCOUNT!);
+      this.serviceAccount = JSON.parse(process.env.SERVICE_ACCOUNT);
 
       const cert = {
         projectId: this.serviceAccount.project_id,
@@ -21,9 +20,12 @@ export class Identity {
 
       this.app =
         admin.apps[0] ||
-        admin.initializeApp({
+      admin.initializeApp(
+        {
           credential: admin.credential.cert(cert),
-        });
+          databaseURL: "https://grupo7-cliente.firebaseio.com",
+        }
+        );
     } catch (error) {
       console.error(error);
     }

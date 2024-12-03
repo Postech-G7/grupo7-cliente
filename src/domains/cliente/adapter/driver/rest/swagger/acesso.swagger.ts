@@ -4,10 +4,11 @@ export const post_cliente = {
   $nome: "Novo Cliente",
 };
 export const put_cliente = {
-  $email: "novocliente@gmail.com",
-  $nome: "Novo Cliente",
-};
+    $email: "reis@gmail.com",
+    $nome: "Luan Reis"
+}
+
 export const post_cliente_autenticacao = {
-  $email: "marina@gmail.com",
-  $cpf: "11111111111",
-};
+    $cpf: "12345678909",
+    $email: "reis@gmail.com",
+}
