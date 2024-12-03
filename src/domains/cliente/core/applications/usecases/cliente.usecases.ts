@@ -20,7 +20,12 @@ export class ClienteUseCases {
       );
 
       if (ultimaVersao) {
-        throw new CustomError("Já existe cliente para esse CPF", 400, false, []);
+        throw new CustomError(
+          "Já existe cliente para esse CPF",
+          400,
+          false,
+          []
+        );
       }
 
       const user = await this.identity.createUser(cliente); // cria o usuário no firebase
@@ -33,7 +38,7 @@ export class ClienteUseCases {
       }
       return clienteVersao;
     } catch (error) {
-      console.error('Error in adiciona:', error);
+      console.error("Error in adiciona:", error);
       throw new CustomError("Ops, algo deu errado na operação", 500, false, []);
     }
   }
@@ -63,7 +68,7 @@ export class ClienteUseCases {
       }
       return clienteVersao;
     } catch (error) {
-      console.error('Error in atualiza:', error);
+      console.error("Error in atualiza:", error);
       throw new CustomError("Ops, algo deu errado na operação", 500, false, []);
     }
   }
@@ -82,7 +87,7 @@ export class ClienteUseCases {
         );
       }
     } catch (error) {
-      console.error('Error in buscaUltimaVersao:', error);
+      console.error("Error in buscaUltimaVersao:", error);
       throw new CustomError("Ops, algo deu errado na operação", 500, false, []);
     }
   }
@@ -90,9 +95,8 @@ export class ClienteUseCases {
   async autenticacao(email: string, cpf: string): Promise<string> {
     try {
       console.info("autenticacao");
-      const ultimaVersao: Cliente | null = await this.database.buscaUltimaVersao(
-        cpf
-      ); //verifica se o cliente existe no banco e retorna a ultima versao
+      const ultimaVersao: Cliente | null =
+        await this.database.buscaUltimaVersao(cpf); //verifica se o cliente existe no banco e retorna a ultima versao
 
       if (
         !ultimaVersao ||
@@ -116,7 +120,7 @@ export class ClienteUseCases {
         dataCadastro: ultimaVersao.getVersao()?.dataCadastro,
       });
     } catch (error) {
-      console.error('Error in autenticacao:', error);
+      console.error("Error in autenticacao:", error);
       throw new CustomError("Ops, algo deu errado na operação", 500, false, []);
     }
   }
@@ -125,9 +129,11 @@ export class ClienteUseCases {
     try {
       let cliente: Cliente | null = null;
       try {
-        cliente = await this.identity.verifyIdToken(token.replace("Bearer ", ""));
+        cliente = await this.identity.verifyIdToken(
+          token.replace("Bearer ", "")
+        );
       } catch (error) {
-        console.error('Error in verifyIdToken:', error);
+        console.error("Error in verifyIdToken:", error);
       }
 
       if (cliente) {
@@ -136,7 +142,7 @@ export class ClienteUseCases {
         throw new CustomError("Cliente não está autenticado", 404, false, []);
       }
     } catch (error) {
-      console.error('Error in buscaAutenticado:', error);
+      console.error("Error in buscaAutenticado:", error);
       throw new CustomError("Ops, algo deu errado na operação", 500, false, []);
     }
   }

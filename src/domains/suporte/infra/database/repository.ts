@@ -1,4 +1,4 @@
-import mysql from 'mysql2/promise';
+import mysql from "mysql2/promise";
 
 export class Repository {
   private connection!: mysql.Connection;
@@ -11,21 +11,21 @@ export class Repository {
   private async initConnection(config: mysql.ConnectionOptions) {
     try {
       this.connection = await mysql.createConnection(config);
-      console.log('Database connection established');
+      console.log("Database connection established");
     } catch (error) {
-      console.error('Error initializing database connection:', error);
-      throw new Error('Database connection initialization failed');
+      console.error("Error initializing database connection:", error);
+      throw new Error("Database connection initialization failed");
     }
   }
 
-  protected async query(sql: string, params: any[] = []) {
+  async query(sql: string, params: any[] = []) {
     if (this.connectionPromise) {
       await this.connectionPromise;
       this.connectionPromise = null; // Clear the promise after the connection is established
     }
 
     if (!this.connection) {
-      throw new Error('Database connection is not initialized');
+      throw new Error("Database connection is not initialized");
     }
 
     const [results] = await this.connection.execute(sql, params);

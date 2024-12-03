@@ -4,6 +4,7 @@ import { body, param } from "express-validator";
 import { ClienteUseCases } from "../../../../core/applications/usecases/cliente.usecases";
 import { ClienteDatabase } from "../../../driven/infra/database/cliente.database";
 import { Identity } from "../../../driven/infra/identity/identity";
+import { Repository } from "../../../../../suporte/infra/database/repository";
 
 const router = Router();
 
@@ -26,10 +27,17 @@ router.post(
                 'schema': { $ref: '#/definitions/post_cliente' }
         }
     */
+    const repository = new Repository({
+      host: process.env.DATABASE_HOST!,
+      port: Number(process.env.DATABASE_PORT),
+      user: process.env.DATABASE_USER!,
+      password: process.env.DATABASE_PASSWORD!,
+      database: process.env.DATABASE_NAME!,
+    });
 
-    const database = new ClienteDatabase();
+    const clienteDatabase = new ClienteDatabase(repository);
     const identity = new Identity();
-    const service = new ClienteUseCases(database, identity);
+    const service = new ClienteUseCases(clienteDatabase, identity);
     const controller = new ClienteController(service);
     const clienteCriado = await controller.adiciona(request);
 
@@ -60,9 +68,17 @@ router.put(
         }
     */
 
-    const database = new ClienteDatabase();
+    const repository = new Repository({
+      host: process.env.DATABASE_HOST!,
+      port: Number(process.env.DATABASE_PORT),
+      user: process.env.DATABASE_USER!,
+      password: process.env.DATABASE_PASSWORD!,
+      database: process.env.DATABASE_NAME!,
+    });
+
+    const clienteDatabase = new ClienteDatabase(repository);
     const identity = new Identity();
-    const service = new ClienteUseCases(database, identity);
+    const service = new ClienteUseCases(clienteDatabase, identity);
     const controller = new ClienteController(service);
     const clienteAtualizado = await controller.atualiza(request).then();
     return response.status(clienteAtualizado.statusCode).json({
@@ -86,9 +102,17 @@ router.get(
         #swagger.tags = ['Cliente']
     */
 
-    const database = new ClienteDatabase();
+    const repository = new Repository({
+      host: process.env.DATABASE_HOST!,
+      port: Number(process.env.DATABASE_PORT),
+      user: process.env.DATABASE_USER!,
+      password: process.env.DATABASE_PASSWORD!,
+      database: process.env.DATABASE_NAME!,
+    });
+
+    const clienteDatabase = new ClienteDatabase(repository);
     const identity = new Identity();
-    const service = new ClienteUseCases(database, identity);
+    const service = new ClienteUseCases(clienteDatabase, identity);
     const controller = new ClienteController(service);
     const cliente = await controller.buscaUltimaVersao(request);
 
@@ -119,19 +143,18 @@ router.post(
               'schema': { $ref: '#/definitions/post_cliente_autenticacao' }
       }      
   */
-    console.log("Entrou no post autenticacao, ", request.body);
-    console.log(process.env.DATABASE_URL);
-    console.log(process.env.MERCADO_PAGO_URL);
-    console.log(process.env.MERCADO_PAGO_USERID);
-    console.log(process.env.MERCADO_PAGO_TOKEN);
-    console.log(process.env.MERCADO_PAGO_POS);
-    console.log(process.env.MERCADO_PAGO_WEBHOOK_URL);
-    console.log(process.env.SERVICE_ACCOUNT);
 
-    const database = new ClienteDatabase();
+    const repository = new Repository({
+      host: process.env.DATABASE_HOST!,
+      port: Number(process.env.DATABASE_PORT),
+      user: process.env.DATABASE_USER!,
+      password: process.env.DATABASE_PASSWORD!,
+      database: process.env.DATABASE_NAME!,
+    });
+
+    const clienteDatabase = new ClienteDatabase(repository);
     const identity = new Identity();
-    console.log("aqui1");
-    const service = new ClienteUseCases(database, identity);
+    const service = new ClienteUseCases(clienteDatabase, identity);
     const controller = new ClienteController(service);
 
     const tokenCriado = await controller.autentica(request).then();
@@ -155,9 +178,17 @@ router.get("/v1", async (request: Request, response: Response) => {
       #swagger.tags = ['Cliente']
   */
 
-  const database = new ClienteDatabase();
+  const repository = new Repository({
+    host: process.env.DATABASE_HOST!,
+    port: Number(process.env.DATABASE_PORT),
+    user: process.env.DATABASE_USER!,
+    password: process.env.DATABASE_PASSWORD!,
+    database: process.env.DATABASE_NAME!,
+  });
+
+  const clienteDatabase = new ClienteDatabase(repository);
   const identity = new Identity();
-  const service = new ClienteUseCases(database, identity);
+  const service = new ClienteUseCases(clienteDatabase, identity);
   const controller = new ClienteController(service);
 
   const cliente = await controller.buscaAutenticado(request).then();
