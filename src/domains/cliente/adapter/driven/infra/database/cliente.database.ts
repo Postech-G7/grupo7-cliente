@@ -3,21 +3,16 @@ import { Repository } from "../../../../../suporte/infra/database/repository";
 import { ICliente } from "../../../../core/applications/ports/cliente.port";
 import { ClienteVersao } from "../../../../core/entities/cliente.versao";
 
-export class ClienteDatabase extends Repository implements ICliente {
-  constructor() {
-    const config = {
-      host: process.env.DATABASE_HOST,
-      port: Number(process.env.DATABASE_PORT),
-      user: process.env.DATABASE_USER,
-      password: process.env.DATABASE_PASSWORD,
-      database: process.env.DATABASE_NAME,
-    };
-    super(config);
+export class ClienteDatabase implements ICliente {
+  private repository: Repository;
+
+  constructor(repository: Repository) {
+    this.repository = repository;
   }
 
   async adiciona(cliente: Cliente): Promise<ClienteVersao | null> {
     const sql = `INSERT INTO clientes (cpf, nome, email, identity) VALUES (?, ?, ?, ?)`;
-    const result: any = await this.query(sql, [
+    const result: any = await this.repository.query(sql, [
       cliente.getCpf(),
       cliente.getNome(),
       cliente.getEmail(),
@@ -25,7 +20,7 @@ export class ClienteDatabase extends Repository implements ICliente {
     ]);
 
     if (!result || !result.insertId) {
-      throw new Error('Failed to insert cliente');
+      throw new Error("Falha ao inserir cliente");
     }
 
     return new ClienteVersao(result.insertId.toString(), new Date());
@@ -33,7 +28,7 @@ export class ClienteDatabase extends Repository implements ICliente {
 
   async atualiza(cliente: Cliente): Promise<ClienteVersao | null> {
     const sql = `UPDATE clientes SET nome = ?, email = ?, identity = ? WHERE cpf = ?`;
-    const result: any = await this.query(sql, [
+    const result: any = await this.repository.query(sql, [
       cliente.getNome(),
       cliente.getEmail(),
       cliente.getIdentity(),
@@ -41,7 +36,7 @@ export class ClienteDatabase extends Repository implements ICliente {
     ]);
 
     if (!result || result.affectedRows === 0) {
-      throw new Error('Failed to update cliente');
+      throw new Error("Falha ao atualizar cliente");
     }
 
     return new ClienteVersao(cliente.getCpf(), new Date());
@@ -49,7 +44,7 @@ export class ClienteDatabase extends Repository implements ICliente {
 
   async buscaUltimaVersao(cpf: string): Promise<Cliente | null> {
     const sql = `SELECT * FROM clientes WHERE cpf = ? ORDER BY id DESC LIMIT 1`;
-    const results: any = await this.query(sql, [cpf]);
+    const results: any = await this.repository.query(sql, [cpf]);
 
     if (results.length === 0) {
       return null;
@@ -61,7 +56,7 @@ export class ClienteDatabase extends Repository implements ICliente {
       data.nome,
       data.email,
       data.identity,
-      new ClienteVersao(data.id.toString(), data.created_at)
+      new ClienteVersao(data.id.toString(), new Date(data.created_at))
     );
   }
 }

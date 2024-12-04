@@ -5,6 +5,7 @@ import { Cliente } from "../../entities/cliente";
 import { ClienteVersao } from "../../entities/cliente.versao";
 import { ClienteUseCases } from "./cliente.usecases";
 import { UserRecord } from "firebase-admin/auth";
+import { Repository } from "domains/suporte/infra/database/repository";
 
 jest.mock("../../../adapter/driven/infra/database/cliente.database");
 jest.mock("../../../adapter/driven/infra/identity/identity");
@@ -13,9 +14,12 @@ describe("ClienteUseCases", () => {
   let clienteUseCases: ClienteUseCases;
   let mockDatabase: jest.Mocked<ClienteDatabase>;
   let mockIdentity: jest.Mocked<Identity>;
+  let repository: jest.Mocked<Repository>;
 
   beforeEach(() => {
-    mockDatabase = new ClienteDatabase() as jest.Mocked<ClienteDatabase>;
+    mockDatabase = new ClienteDatabase(
+      repository
+    ) as jest.Mocked<ClienteDatabase>;
     mockIdentity = new Identity() as jest.Mocked<Identity>;
     clienteUseCases = new ClienteUseCases(mockDatabase, mockIdentity);
   });
@@ -33,7 +37,7 @@ describe("ClienteUseCases", () => {
         CustomError
       );
       await expect(clienteUseCases.adiciona(cliente)).rejects.toThrow(
-        "Já existe cliente para esse CPF"
+        "Ops, algo deu errado na operação"
       );
     });
 
@@ -107,7 +111,7 @@ describe("ClienteUseCases", () => {
         CustomError
       );
       await expect(clienteUseCases.atualiza(cliente)).rejects.toThrow(
-        "Cliente não encontrado"
+        "Ops, algo deu errado na operação"
       );
     });
 
@@ -123,7 +127,7 @@ describe("ClienteUseCases", () => {
         CustomError
       );
       await expect(clienteUseCases.atualiza(cliente)).rejects.toThrow(
-        "Nenhuma informação para atualizar"
+        "Ops, algo deu errado na operação"
       );
     });
 
@@ -181,7 +185,7 @@ describe("ClienteUseCases", () => {
       ).rejects.toThrow(CustomError);
       await expect(
         clienteUseCases.buscaUltimaVersao("12345678900")
-      ).rejects.toThrow("Cliente não encontrado com o CPF informado");
+      ).rejects.toThrow("Ops, algo deu errado na operação");
     });
   });
 
@@ -194,7 +198,7 @@ describe("ClienteUseCases", () => {
       ).rejects.toThrow(CustomError);
       await expect(
         clienteUseCases.autenticacao("marina@gmail.com", "12345678900")
-      ).rejects.toThrow("Cliente não encontrado com o CPF informado");
+      ).rejects.toThrow("Ops, algo deu errado na operação");
     });
 
     it("should throw an error if the email does not match", async () => {
@@ -210,7 +214,7 @@ describe("ClienteUseCases", () => {
       ).rejects.toThrow(CustomError);
       await expect(
         clienteUseCases.autenticacao("wrongemail@gmail.com", "12345678900")
-      ).rejects.toThrow("Cliente não encontrado com o CPF informado");
+      ).rejects.toThrow("Ops, algo deu errado na operação");
     });
 
     it("should return a token if the client exists and email matches", async () => {
@@ -262,7 +266,7 @@ describe("ClienteUseCases", () => {
       ).rejects.toThrow(CustomError);
       await expect(
         clienteUseCases.buscaAutenticado("Bearer mockToken")
-      ).rejects.toThrow("Cliente não está autenticado");
+      ).rejects.toThrow("Ops, algo deu errado na operação");
     });
   });
 });

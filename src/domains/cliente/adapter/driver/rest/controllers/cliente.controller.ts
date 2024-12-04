@@ -21,6 +21,14 @@ export class ClienteController {
       }
 
       const { cpf, nome, email } = request.body;
+      if (!cpf || !nome || !email) {
+        throw new CustomError(
+          "Parâmetros inválidos. Por favor, verifique as informações enviadas.",
+          400,
+          false,
+          result.array()
+        );
+      }
       return new CustomResponse(
         200,
         "Cliente adicionado",
@@ -37,7 +45,6 @@ export class ClienteController {
   }
   async atualiza(request: Request): Promise<CustomResponse | CustomError> {
     try {
-      console.log("entrou no atualiza", request.body);
       const result = validationResult(request);
 
       if (!result.isEmpty()) {
@@ -48,8 +55,15 @@ export class ClienteController {
           result.array()
         );
       }
-      console.log("entrou no atualiza", request.body );
       const { nome, email } = request.body;
+      if (!nome || !email) {
+        throw new CustomError(
+          "Parâmetros inválidos. Por favor, verifique as informações enviadas.",
+          400,
+          false,
+          result.array()
+        );
+      }
       return new CustomResponse(
         200,
         "Cliente atualizado",
@@ -83,6 +97,14 @@ export class ClienteController {
       }
 
       const { cpf } = request.params;
+      if (!cpf) {
+        throw new CustomError(
+          "Parâmetros inválidos. Por favor, verifique as informações enviadas.",
+          400,
+          false,
+          result.array()
+        );
+      }
       const cliente = await this.service.buscaUltimaVersao(cpf);
       return new CustomResponse(200, "Cliente encontrado", cliente, true);
     } catch (err) {
@@ -109,6 +131,14 @@ export class ClienteController {
       }
 
       const { email, cpf } = request.body;
+      if (!email || !cpf) {
+        throw new CustomError(
+          "Parâmetros inválidos. Por favor, verifique as informações enviadas.",
+          400,
+          false,
+          result.array()
+        );
+      }
       const response = await this.service.autenticacao(email, cpf);
       return new CustomResponse(200, "sucesso", response, true);
     } catch (err) {
